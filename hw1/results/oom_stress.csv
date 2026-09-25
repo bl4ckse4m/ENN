@@ -1,12 +1,17 @@
-S,B,latency_s,memory_bytes,energy_j,is_validation,is_stress,stress_axis,status,predicted_memory_bytes,gpu_free_memory_before_bytes,gpu_total_memory_bytes,predicted_oom_from_total,energy_method
-640,256,0.151072199995,7168032768,,False,True,image_size,OK,5456756496,15744368640,17066033152,False,skipped
-512,512,0.192708999995,9164521472,,False,True,batch,OK,6983483152,14777581568,17066033152,False,skipped
-768,256,0.218397599994,10305372160,,False,True,image_size,OK,7855898384,14777581568,17066033152,False,skipped
-512,640,0.241869200006,11446222848,,False,True,batch,OK,8728313616,14777581568,17066033152,False,skipped
-512,768,0.286841299996,13727924224,,False,True,batch,OK,10473144080,14777581568,17066033152,False,skipped
-896,256,0.306136700005,14013136896,,False,True,image_size,OK,10691247888,14777581568,17066033152,False,skipped
-512,832,0.369908699999,14868774912,,False,True,batch,OK,11345559312,14777581568,17066033152,False,skipped
-512,896,19.2610693,16009625600,,False,True,batch,OK,12217974544,14777581568,17066033152,False,skipped
-960,256,20.4613357,16080928768,,False,True,image_size,OK,12272500496,14777581568,17066033152,False,skipped
-512,1024,70.0853056,18291326976,,False,True,batch,OK,13962805008,14777581568,17066033152,False,skipped
-1024,256,72.6306822,18291326976,,False,True,image_size,OK,13962805008,14777581568,17066033152,False,skipped
+S,B,latency_s,memory_bytes,energy_j,is_validation,is_stress,stress_axis,status,predicted_memory_bytes,gpu_free_memory_before_bytes,gpu_total_memory_bytes,predicted_oom_from_total,energy_method,oom_error
+640,256,0.145863767,7168032768,,False,True,image_size,OK,5456756496,15582560256,16585981952,False,skipped,
+512,512,0.18716472,9164521472,,False,True,batch,OK,6983483152,14687076352,16585981952,False,skipped,
+768,256,0.212641482,10305372160,,False,True,image_size,OK,7855898384,14687076352,16585981952,False,skipped,
+512,640,0.234015596,11446222848,,False,True,batch,OK,8728313616,14687076352,16585981952,False,skipped,
+512,768,0.280795941,13727924224,,False,True,batch,OK,10473144080,14687076352,16585981952,False,skipped,
+896,256,0.296898954,14013136896,,False,True,image_size,OK,10691247888,14687076352,16585981952,False,skipped,
+512,800,0.293539281,14298349568,,False,True,batch,OK,10909351696,14687076352,16585981952,False,skipped,
+512,816,0.299276964,14583562240,,False,True,batch,OK,11127455504,14687076352,16585981952,False,skipped,
+512,832,,,,False,True,batch,OOM,11345559312,14687076352,16585981952,False,skipped,"OutOfMemoryError: CUDA out of memory. Tried to allocate 3.25 GiB. GPU 0 has a total capacity of 15.45 GiB of which 3.12 GiB is free. Including non-PyTorch memory, this process has 11.63 GiB memory in use. Of the alloca"
+928,256,,,,False,True,image_size,OOM,11468242704,14687076352,16585981952,False,skipped,"OutOfMemoryError: CUDA out of memory. Tried to allocate 3.29 GiB. GPU 0 has a total capacity of 15.45 GiB of which 3.00 GiB is free. Including non-PyTorch memory, this process has 11.75 GiB memory in use. Of the alloca"
+512,896,,,,False,True,batch,OOM,12217974544,14687076352,16585981952,False,skipped,"OutOfMemoryError: CUDA out of memory. Tried to allocate 3.50 GiB. GPU 0 has a total capacity of 15.45 GiB of which 2.30 GiB is free. Including non-PyTorch memory, this process has 12.45 GiB memory in use. Of the alloca"
+960,256,,,,False,True,image_size,OOM,12272500496,14687076352,16585981952,False,skipped,"OutOfMemoryError: CUDA out of memory. Tried to allocate 3.52 GiB. GPU 0 has a total capacity of 15.45 GiB of which 2.25 GiB is free. Including non-PyTorch memory, this process has 12.50 GiB memory in use. Of the alloca"
+512,1024,,,,False,True,batch,OOM,13962805008,14687076352,16585981952,False,skipped,"OutOfMemoryError: CUDA out of memory. Tried to allocate 4.00 GiB. GPU 0 has a total capacity of 15.45 GiB of which 694.69 MiB is free. Including non-PyTorch memory, this process has 14.07 GiB memory in use. Of the allo"
+1024,256,,,,False,True,image_size,OOM,13962805008,14687076352,16585981952,False,skipped,"OutOfMemoryError: CUDA out of memory. Tried to allocate 4.00 GiB. GPU 0 has a total capacity of 15.45 GiB of which 694.69 MiB is free. Including non-PyTorch memory, this process has 14.07 GiB memory in use. Of the allo"
+512,1152,,,,False,True,batch,OOM,15707635472,14687076352,16585981952,False,skipped,"OutOfMemoryError: CUDA out of memory. Tried to allocate 2.25 GiB. GPU 0 has a total capacity of 15.45 GiB of which 1.30 GiB is free. Including non-PyTorch memory, this process has 13.45 GiB memory in use. Of the alloca"
+512,1280,,,,False,True,batch,OOM,17452465936,14687076352,16585981952,True,skipped,"OutOfMemoryError: CUDA out of memory. Tried to allocate 10.00 GiB. GPU 0 has a total capacity of 15.45 GiB of which 9.93 GiB is free. Including non-PyTorch memory, this process has 4.82 GiB memory in use. Of the alloca"

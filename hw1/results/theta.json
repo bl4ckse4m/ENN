@@ -1,0 +1,93 @@
+{
+  "latency": {
+    "launch_overhead_s": 0.00015824350399611697,
+    "compute_rate_flops_s": 14120488360872.674,
+    "memory_bandwidth_bytes_s": 340824193851.0339
+  },
+  "energy": {
+    "fixed_energy_j": 0.011164399317359583,
+    "energy_per_flop_j": 2.256439176768219e-11,
+    "energy_per_byte_j": 1.30326169866946e-20
+  },
+  "memory_workspace_diagnostic": {
+    "a_scale": 1.295446883646665,
+    "b_bytes": 52156248.77153727,
+    "max_residual_bytes": 198735659.9951976,
+    "note": "measured = a_scale*ideal + b_bytes on the 132-point grid; diagnostic only, Memory(S,B) stays parameter-free"
+  },
+  "fit": {
+    "latency_method": "scipy.optimize.least_squares (log-space, log residuals)",
+    "energy": {
+      "design_condition_number": 6222794504674.341,
+      "flops_bytes_correlation": 0.9999999993552848,
+      "method": "scipy.optimize.lsq_linear (non-negative, relative-error weighted)"
+    },
+    "residual": "relative / log error",
+    "calibration_points": 63,
+    "validation_points": 69,
+    "latency_cost": 0.5923602368638069
+  },
+  "metrics": {
+    "latency_calibration": {
+      "points": 63,
+      "rmse": 0.0017703250849467713,
+      "mape_percent": 10.895015084869144,
+      "median_ape_percent": 9.970526566405477,
+      "max_ape_percent": 39.85081860534862,
+      "predicted_over_measured_mean": 1.0094048571518763
+    },
+    "latency_validation": {
+      "points": 69,
+      "rmse": 0.0018507767233762523,
+      "mape_percent": 9.394796133126919,
+      "median_ape_percent": 10.094737106132694,
+      "max_ape_percent": 41.84511727583689,
+      "predicted_over_measured_mean": 0.9715210121386219
+    },
+    "energy_calibration": {
+      "points": 63,
+      "rmse": 0.18622921449933744,
+      "mape_percent": 9.40082686967702,
+      "median_ape_percent": 8.072736836281734,
+      "max_ape_percent": 45.570028251263075,
+      "predicted_over_measured_mean": 0.9850931674680529
+    },
+    "energy_validation": {
+      "points": 69,
+      "rmse": 0.3217247036976496,
+      "mape_percent": 6.890680936064996,
+      "median_ape_percent": 4.444449808518213,
+      "max_ape_percent": 43.13612458295893,
+      "predicted_over_measured_mean": 0.9543444332849702
+    },
+    "memory_calibration": {
+      "points": 63,
+      "rmse": 212461963.66584826,
+      "mape_percent": 62.5420505430572,
+      "median_ape_percent": 68.52475711256102,
+      "max_ape_percent": 89.92127778171007,
+      "predicted_over_measured_mean": 0.37457949456942796
+    },
+    "memory_validation": {
+      "points": 69,
+      "rmse": 219130955.39087301,
+      "mape_percent": 53.13701985981529,
+      "median_ape_percent": 49.954240431479356,
+      "max_ape_percent": 90.12129764183267,
+      "predicted_over_measured_mean": 0.468629801401847
+    },
+    "memory_measured_over_predicted_stress": {
+      "mean": 1.3114799585722299,
+      "min": 1.3105927257815255,
+      "max": 1.3136068602757751
+    },
+    "oom_comparison": {
+      "stress_points": 16,
+      "actual_oom": 8,
+      "analytic_predicted_oom": 2,
+      "analytic_correct": 10,
+      "workspace_predicted_oom": 8,
+      "workspace_correct": 16
+    }
+  }
+}

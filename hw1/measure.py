@@ -7,6 +7,7 @@ import math
 import statistics
 import threading
 import time
+from contextlib import ExitStack
 from pathlib import Path
 
 import numpy as np
@@ -22,8 +23,8 @@ else:
 
 BASE_IMAGE_SIZES = (32, 64, 128, 224, 256, 384, 512)
 BASE_BATCH_SIZES = (1, 2, 4, 8, 16, 32, 64, 128, 256)
-OOM_STRESS_BATCHES = (512, 640, 768, 832, 896, 1024, 1152, 1280)
-OOM_STRESS_IMAGE_SIZES = (640, 768, 896, 960, 1024)
+OOM_STRESS_BATCHES = (512, 640, 768, 800, 816, 832, 896, 1024, 1152, 1280)
+OOM_STRESS_IMAGE_SIZES = (640, 768, 896, 928, 960, 1024)
 DEFAULT_RESULTS_DIR = Path(__file__).resolve().parent / "results"
 
 
@@ -351,6 +352,25 @@ def cleanup_cuda() -> None:
     torch.cuda.empty_cache()
 
 
+_OOM_ERROR_TYPES = tuple(
+    error_type
+    for error_type in (
+        getattr(torch, "OutOfMemoryError", None),
+        getattr(torch.cuda, "OutOfMemoryError", None),
+    )
+    if error_type is not None
+)
+
+
+def _is_cuda_oom(error: BaseException) -> bool:
+    if _OOM_ERROR_TYPES and isinstance(error, _OOM_ERROR_TYPES):
+        return True
+    if not isinstance(error, RuntimeError):
+        return False
+    message = str(error).lower()
+    return "out of memory" in message or "alloc_failed" in message
+
+
 def parse_args():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_RESULTS_DIR)
@@ -463,20 +483,27 @@ def main() -> int:
         "gpu_total_memory_bytes",
         "predicted_oom_from_total",
         "energy_method",
+        "oom_error",
     )
     kernel_fields = ("S", "B", "layer", "kernel_name")
 
     try:
-        with (
-            measurements_path.open("w", newline="", encoding="utf-8") as measurements_file,
-            kernels_path.open("w", newline="", encoding="utf-8") as kernels_file,
-        ):
+        with ExitStack() as stack:
+            measurements_file = stack.enter_context(
+                measurements_path.open("w", newline="", encoding="utf-8")
+            )
             measurement_writer = csv.DictWriter(
                 measurements_file, fieldnames=measurement_fields
             )
-            kernel_writer = csv.DictWriter(kernels_file, fieldnames=kernel_fields)
             measurement_writer.writeheader()
-            kernel_writer.writeheader()
+
+            kernel_writer = None
+            if profile_kernel_names:
+                kernels_file = stack.enter_context(
+                    kernels_path.open("w", newline="", encoding="utf-8")
+                )
+                kernel_writer = csv.DictWriter(kernels_file, fieldnames=kernel_fields)
+                kernel_writer.writeheader()
 
             total = len(configurations)
             for index, configuration in enumerate(configurations, start=1):
@@ -506,6 +533,7 @@ def main() -> int:
                         predicted_memory_bytes > total_memory
                     ),
                     "energy_method": "skipped" if not measure_energy else "unavailable",
+                    "oom_error": "",
                 }
                 inputs = None
 
@@ -545,7 +573,7 @@ def main() -> int:
                             print(f"  Energy measurement failed: {error}")
                             row["energy_method"] = "error"
 
-                    if profile_kernel_names:
+                    if kernel_writer is not None:
                         try:
                             kernel_rows = profile_kernels(
                                 model, inputs, image_size, batch, device
@@ -555,8 +583,11 @@ def main() -> int:
                         except Exception as error:
                             print(f"  Kernel profiling failed: {error}")
 
-                except torch.cuda.OutOfMemoryError:
-                    print("  OOM")
+                except Exception as error:
+                    if not _is_cuda_oom(error):
+                        raise
+                    row["oom_error"] = f"{type(error).__name__}: {str(error)[:200]}"
+                    print(f"  OOM ({type(error).__name__})")
                 finally:
                     del inputs
                     cleanup_cuda()
@@ -568,7 +599,8 @@ def main() -> int:
             energy_meter.close()
 
     print(f"Measurements written to {measurements_path}")
-    print(f"Kernels written to {kernels_path}")
+    if profile_kernel_names:
+        print(f"Kernels written to {kernels_path}")
     return 0
 
 
