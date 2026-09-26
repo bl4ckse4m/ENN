@@ -58,6 +58,17 @@ def load_rows(path: Path):
     return rows
 
 
+def load_winograd_points(path: Path):
+    if not path.exists():
+        return set()
+    points = set()
+    with path.open(newline="", encoding="utf-8") as handle:
+        for raw in csv.DictReader(handle):
+            if "winograd" in raw.get("kernel_name", "").lower():
+                points.add((int(raw["S"]), int(raw["B"])))
+    return points
+
+
 def split_rows(rows):
     grid_ok = [r for r in rows if not r["is_stress"] and r["status"] == "OK"]
     calibration = [r for r in grid_ok if not r["is_validation"]]
@@ -196,25 +207,30 @@ def fig_pred_vs_measured(path, rows_cal, rows_val, model, theta, name, unit, key
 
 
 def fig_curves(path, rows, model, theta, name, unit, key, log_y=True,
-               overlay_model=None, overlay_label=None):
+               overlay_model=None, overlay_label=None,
+               highlight_points=None, highlight_label=None):
+    highlight_points = highlight_points or set()
     s_values = sorted({r["S"] for r in rows})
     b_values = np.array(sorted({r["B"] for r in rows}), dtype=np.float64)
     cmap = plt.get_cmap("viridis")
     fig, ax = plt.subplots(figsize=(7.2, 5.0))
     for index, s_value in enumerate(s_values):
         color = cmap(index / max(1, len(s_values) - 1))
-        batch_points = np.array(
-            [r["B"] for r in rows if r["S"] == s_value], dtype=np.float64
-        )
-        measured_points = np.array(
-            [r[key] for r in rows if r["S"] == s_value], dtype=np.float64
-        )
+        s_rows = [r for r in rows if r["S"] == s_value]
+        plain = [r for r in s_rows if (r["S"], r["B"]) not in highlight_points]
+        high = [r for r in s_rows if (r["S"], r["B"]) in highlight_points]
         predicted_curve = np.asarray(
             model(np.full_like(b_values, s_value), b_values, theta)
         )
         ax.plot(b_values, predicted_curve, "-", color=color, linewidth=1.2,
                 label=f"S={s_value}")
-        ax.scatter(batch_points, measured_points, s=14, color=color, zorder=3)
+        if plain:
+            ax.scatter([r["B"] for r in plain], [float(r[key]) for r in plain],
+                       s=14, color=color, zorder=3)
+        if high:
+            ax.scatter([r["B"] for r in high], [float(r[key]) for r in high],
+                       s=36, facecolors="white", edgecolors=color,
+                       linewidths=1.3, zorder=4)
         if overlay_model is not None:
             overlay_curve = np.asarray(
                 overlay_model(np.full_like(b_values, s_value), b_values)
@@ -227,11 +243,16 @@ def fig_curves(path, rows, model, theta, name, unit, key, log_y=True,
     style_axes(ax, f"{name}: predicted curves and measured points",
                "batch size B (images)", f"{name} ({unit})")
     legend = ax.legend(title="image size S", fontsize=7, ncol=2, loc="upper left")
+    extra_handles, extra_labels = [], []
+    if highlight_points:
+        extra_handles.append(ax.scatter([], [], s=36, facecolors="white",
+                                        edgecolors="black", linewidths=1.3))
+        extra_labels.append(highlight_label or "measured (highlighted)")
     if overlay_model is not None:
-        ax.plot([], [], "--", color="red", linewidth=1.0,
-                label=overlay_label or "workspace-inclusive diagnostic")
-        handles, labels = ax.get_legend_handles_labels()
-        ax.legend(handles[-1:], labels[-1:], fontsize=7, loc="lower right")
+        extra_handles.append(ax.plot([], [], "--", color="red", linewidth=1.0)[0])
+        extra_labels.append(overlay_label or "workspace-inclusive diagnostic")
+    if extra_handles:
+        ax.legend(extra_handles, extra_labels, fontsize=7, loc="lower right")
         ax.add_artist(legend)
     fig.tight_layout()
     fig.savefig(path, dpi=150)
@@ -632,6 +653,8 @@ def main() -> int:
             f"workspace-inclusive diagnostic: "
             f"{workspace['a_scale']:.2f}*M + {workspace['b_bytes'] / 2**20:.0f} MiB"
         ),
+        highlight_points=load_winograd_points(results_dir / "kernels.csv"),
+        highlight_label="measured (cuDNN conv2 = Winograd)",
     )
     fig_error_heatmap(
         figures_dir / "latency_error_heatmap.png",
