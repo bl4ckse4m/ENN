@@ -1,0 +1,31 @@
+{
+  "task": "sort",
+  "method": "norm_relu",
+  "seed": 1337,
+  "train_examples": 1000000,
+  "batch_size": 256,
+  "lr": 0.001,
+  "min_lr": 5e-05,
+  "weight_decay": 0.1,
+  "warmup_frac": 0.02,
+  "grad_clip": 1.0,
+  "n_layer": null,
+  "n_head": null,
+  "n_embd": null,
+  "pmem_size": 2688,
+  "eval_examples": 256,
+  "eval_interval": 1000,
+  "out_dir": "results/synthetic",
+  "device": "cuda",
+  "dtype": "bfloat16",
+  "compile": false,
+  "save_ckpt": false
+}
+params=8147568 max_iters=3906
+iter=1000 loss=0.0255 exact=0.8906
+iter=2000 loss=0.0101 exact=0.9336
+iter=3000 loss=0.0022 exact=1.0000
+iter=3906 loss=0.0005 exact=1.0000
+len=1x {'exact_acc': 1.0, 'n': 256, 'seq_len': 63, 'token_acc': 1.0}
+len=2x {'exact_acc': 0.0, 'n': 256, 'seq_len': 127, 'token_acc': 0.857421875}
+len=4x {'exact_acc': 0.0, 'n': 256, 'seq_len': 255, 'token_acc': 0.5647941468253969}

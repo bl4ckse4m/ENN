@@ -1,0 +1,35 @@
+{
+  "task": "mqmtar",
+  "method": "norm_relu",
+  "seed": 1337,
+  "train_examples": 1000000,
+  "batch_size": 256,
+  "lr": 0.001,
+  "min_lr": 5e-05,
+  "weight_decay": 0.1,
+  "warmup_frac": 0.02,
+  "grad_clip": 1.0,
+  "n_layer": null,
+  "n_head": null,
+  "n_embd": null,
+  "pmem_size": 2688,
+  "eval_examples": 256,
+  "eval_interval": 1000,
+  "out_dir": "results/synthetic",
+  "device": "cuda",
+  "dtype": "bfloat16",
+  "compile": false,
+  "save_ckpt": false
+}
+params=16392416 max_iters=3906
+iter=1000 loss=0.6972 exact=0.0000
+iter=2000 loss=0.4344 exact=0.0039
+iter=3000 loss=0.3388 exact=0.0469
+iter=3906 loss=0.2809 exact=0.0742
+len=1x {'exact_acc': 0.12109375, 'n': 256, 'seq_len': 66, 'pair_acc': 0.6298828125}
+len=2x {'exact_acc': 0.01171875, 'n': 256, 'seq_len': 126, 'pair_acc': 0.501953125}
+len=4x {'exact_acc': 0.0, 'n': 256, 'seq_len': 258, 'pair_acc': 0.37109375}
+len=8x {'exact_acc': 0.0, 'n': 256, 'seq_len': 510, 'pair_acc': 0.2265625}
+len=16x {'exact_acc': 0.0, 'n': 256, 'seq_len': 1026, 'pair_acc': 0.0986328125}
+len=32x {'exact_acc': 0.0, 'n': 256, 'seq_len': 2046, 'pair_acc': 0.01953125}
+len=64x {'exact_acc': 0.0, 'n': 256, 'seq_len': 4098, 'pair_acc': 0.0}

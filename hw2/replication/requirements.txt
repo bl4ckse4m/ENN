@@ -1,0 +1,12 @@
+# Replication environment (Python 3.12, RTX 5070 Ti / sm_120).
+# torch: install the CUDA 12.8 build first (Blackwell needs cu128+):
+#   pip install torch torchvision --index-url https://download.pytorch.org/whl/cu128
+torch>=2.7
+numpy
+matplotlib
+tqdm
+entmax==1.3
+tiktoken
+pandas
+py7zr
+pythomata

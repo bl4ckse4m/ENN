@@ -1,0 +1,158 @@
+[
+  {
+    "name": "Prop.1: alpha-entmax == NW[rectpoly r=1/(alpha-1)]  (alpha=4/3 (triweight, r=3))",
+    "passed": true,
+    "max_abs_diff": "7.45e-08",
+    "trials": 20
+  },
+  {
+    "name": "Prop.1: alpha-entmax == NW[rectpoly r=1/(alpha-1)]  (alpha=1.5 (biweight, r=2))",
+    "passed": true,
+    "max_abs_diff": "1.19e-07",
+    "trials": 20
+  },
+  {
+    "name": "Prop.1: alpha-entmax == NW[rectpoly r=1/(alpha-1)]  (alpha=2.0 (Epanechnikov, r=1))",
+    "passed": true,
+    "max_abs_diff": "2.98e-07",
+    "trials": 20
+  },
+  {
+    "name": "Eq.8: sparsemax == [s/gamma - tau]_+ (auto-normalized Epanechnikov)",
+    "passed": true,
+    "max_abs_diff": "2.98e-08"
+  },
+  {
+    "name": "Eq.8: sum_i [s_i/gamma - tau]_+ = 1 (auto-normalization)",
+    "passed": true,
+    "max_abs_err": "5.96e-08"
+  },
+  {
+    "name": "Eq.8: sparsemax == NW[Epanechnikov, h=sqrt(2-2 gamma tau)]",
+    "passed": true,
+    "max_abs_diff": "2.38e-07"
+  },
+  {
+    "name": "Eq.6: normReLU == NW[Epanechnikov, fixed h] (gamma=h^2/2, b=1-2/h^2)",
+    "passed": true,
+    "max_abs_diff": "8.94e-08",
+    "degenerate_fallback_uniform": true
+  },
+  {
+    "name": "Eq.10: top-k softmax == NW[truncated Gaussian kNN]",
+    "passed": true,
+    "max_abs_diff": "5.96e-08"
+  },
+  {
+    "name": "top-k uniform == uniform-kNN NW (Eq. 4)",
+    "passed": true,
+    "max_abs_diff": "0.00e+00"
+  },
+  {
+    "name": "Eq.11/12: r-ReLUmax == NW[max-anchored poly kernel] and support == {s > m - b h^2}",
+    "passed": true,
+    "max_abs_diff": "0.00e+00",
+    "support_matches": true,
+    "no_empty_support": true
+  },
+  {
+    "name": "our sparsemax == entmax.sparsemax",
+    "passed": true,
+    "max_abs_diff": "5.96e-08"
+  },
+  {
+    "name": "our entmax(1.5/4/3) == entmax.entmax_bisect",
+    "passed": true,
+    "max_abs_diff": "1.79e-07"
+  },
+  {
+    "name": "sanity: simplex constraints for all activations",
+    "passed": true,
+    "softmax": {
+      "sums_to_1": true,
+      "nonneg": true,
+      "zero_frac": 0.0
+    },
+    "sparsemax": {
+      "sums_to_1": true,
+      "nonneg": true,
+      "zero_frac": 0.967
+    },
+    "entmax15": {
+      "sums_to_1": true,
+      "nonneg": true,
+      "zero_frac": 0.931
+    },
+    "entmax43": {
+      "sums_to_1": true,
+      "nonneg": true,
+      "zero_frac": 0.858
+    },
+    "norm_relu": {
+      "sums_to_1": true,
+      "nonneg": true,
+      "zero_frac": 0.497
+    },
+    "relumax1": {
+      "sums_to_1": true,
+      "nonneg": true,
+      "zero_frac": 0.955
+    },
+    "relumax3": {
+      "sums_to_1": true,
+      "nonneg": true,
+      "zero_frac": 0.955
+    },
+    "top8_softmax": {
+      "sums_to_1": true,
+      "nonneg": true,
+      "zero_frac": 0.875
+    },
+    "top8_uniform": {
+      "sums_to_1": true,
+      "nonneg": true,
+      "zero_frac": 0.875
+    },
+    "entmax_alpha_1.001_vs_softmax": "2.39e-03"
+  },
+  {
+    "name": "grad: sparsemax (alpha=2.0) backward == finite differences",
+    "passed": true,
+    "max_rel_err": "5.35e-10",
+    "trials": 5
+  },
+  {
+    "name": "grad: entmax alpha=1.2 backward == finite differences",
+    "passed": true,
+    "max_rel_err": "3.13e-08",
+    "trials": 5
+  },
+  {
+    "name": "grad: entmax alpha=1.5 (biweight) backward == finite differences",
+    "passed": true,
+    "max_rel_err": "8.02e-09",
+    "trials": 5
+  },
+  {
+    "name": "grad: entmax alpha=4/3 (triweight) backward == finite differences",
+    "passed": true,
+    "max_rel_err": "1.86e-08",
+    "trials": 5
+  },
+  {
+    "name": "grad: entmax alpha=1.8 backward == finite differences",
+    "passed": true,
+    "max_rel_err": "6.47e-05",
+    "trials": 5
+  },
+  {
+    "name": "grad: shift invariance (row sums of grad == 0)",
+    "passed": true,
+    "max_abs_row_sum": "2.22e-15"
+  },
+  {
+    "name": "grad: our entmax backward == entmax.entmax_bisect backward",
+    "passed": true,
+    "max_abs_diff": "1.40e-06"
+  }
+]

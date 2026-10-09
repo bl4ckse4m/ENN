@@ -1,0 +1,31 @@
+{
+  "task": "sort",
+  "method": "epanechnikov",
+  "seed": 1337,
+  "train_examples": 1000000,
+  "batch_size": 256,
+  "lr": 0.001,
+  "min_lr": 5e-05,
+  "weight_decay": 0.1,
+  "warmup_frac": 0.02,
+  "grad_clip": 1.0,
+  "n_layer": null,
+  "n_head": null,
+  "n_embd": null,
+  "pmem_size": 2688,
+  "eval_examples": 256,
+  "eval_interval": 1000,
+  "out_dir": "results/synthetic",
+  "device": "cuda",
+  "dtype": "bfloat16",
+  "compile": false,
+  "save_ckpt": false
+}
+params=8147568 max_iters=3906
+iter=1000 loss=0.0412 exact=0.8555
+iter=2000 loss=0.0041 exact=0.9727
+iter=3000 loss=0.0016 exact=0.9961
+iter=3906 loss=0.0007 exact=1.0000
+len=1x {'exact_acc': 1.0, 'n': 256, 'seq_len': 63, 'token_acc': 1.0}
+len=2x {'exact_acc': 0.68359375, 'n': 256, 'seq_len': 127, 'token_acc': 0.9916834677419355}
+len=4x {'exact_acc': 0.0, 'n': 256, 'seq_len': 255, 'token_acc': 0.8201574900793651}

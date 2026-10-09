@@ -1,0 +1,30 @@
+{
+  "task": "reverse",
+  "method": "top32_uniform",
+  "seed": 1337,
+  "train_examples": 1000000,
+  "batch_size": 256,
+  "lr": 0.001,
+  "min_lr": 5e-05,
+  "weight_decay": 0.1,
+  "warmup_frac": 0.02,
+  "grad_clip": 1.0,
+  "n_layer": null,
+  "n_head": null,
+  "n_embd": null,
+  "pmem_size": 2688,
+  "eval_examples": 256,
+  "eval_interval": 1000,
+  "out_dir": "results/synthetic",
+  "device": "cuda",
+  "dtype": "bfloat16",
+  "compile": false,
+  "save_ckpt": false
+}
+params=16276192 max_iters=3906
+iter=1000 loss=1.2051 exact=0.0000
+iter=2000 loss=0.6942 exact=0.0000
+iter=3000 loss=0.3357 exact=0.0000
+iter=3906 loss=0.2679 exact=0.0000
+len=1x {'exact_acc': 0.0, 'n': 256, 'seq_len': 63, 'token_acc': 0.7990885416666667}
+len=1.5x {'exact_acc': 0.0, 'n': 256, 'seq_len': 95, 'token_acc': 0.3452785326086957}

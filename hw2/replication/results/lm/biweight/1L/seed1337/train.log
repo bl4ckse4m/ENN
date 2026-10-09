@@ -1,0 +1,9 @@
+{"method": "biweight", "seed": 1337, "data_dir": "data/babistories", "n_layer": 1, "n_head": 12, "n_embd": 768, "block_size": 512, "pmem_size": 2688, "batch_size": 16, "max_iters": 8000, "lr": 0.005, "min_lr": 0.0001, "warmup_iters": 2000, "weight_decay": 0.1, "grad_clip": 1.0, "eval_interval": 1000, "eval_iters": 20, "out_dir": "results/lm", "device": "cuda", "dtype": "bfloat16"}
+iter=1000 train=4.2777 val=4.1377
+iter=2000 train=3.1035 val=3.0053
+iter=3000 train=2.6041 val=2.6078
+iter=4000 train=2.6245 val=2.4590
+iter=5000 train=2.3601 val=2.3450
+iter=6000 train=2.2753 val=2.2701
+iter=7000 train=2.2839 val=2.2102
+iter=8000 train=2.2690 val=2.1804
