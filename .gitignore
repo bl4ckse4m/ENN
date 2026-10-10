@@ -1,0 +1,8 @@
+/hw2/.venv/
+/.venv/
+__pycache__/
+*.pyc
+*.pt
+.idea/
+hw2/replication/data/
+hw2/replication/external/

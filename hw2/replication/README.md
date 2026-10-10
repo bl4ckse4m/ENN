@@ -26,8 +26,8 @@ scripts/run_phase5_supplement.sh # контрольные прогоны: ICL lr
 scripts/rerun_entmax.sh         # запуск только biweight/triweight (quick-пресет, seed 1337)
 results/                # metrics.json + summary_*.md
 figures/                # fig1_kernels.png + fig_length_*.png, fig_icl.png, fig_lm.png
-data/babistories/       # train.bin / val.bin (== Table 4 статьи)
-external/               # клонированные репозитории (для справки)
+data/babistories/       # train.bin / val.bin (== Table 4 статьи) — НЕ в git, собирается (см. ниже)
+external/               # клоны репозиториев авторов — НЕ в git, клонируются (см. ниже)
 ```
 
 ## Окружение (фаза 0)
@@ -51,16 +51,42 @@ $PY -u -m src.theory_checks --out results/theory_checks.json   # 20/20 PASS (в�
 $PY -u -m src.fig1_kernels --out figures/fig1_kernels.png
 ```
 
-## Данные BabiStories
+## Внешние зависимости: `external/` и `data/` (не в git)
 
-`data/babistories/train.bin` (474 704 907 токенов) и `val.bin` (4 749 107) —
-совпадают с Table 4 статьи до токена. Для пересборки (~3 мин, CPU):
+Обе директории не входят в репозиторий (крупные бинарники, см. `.gitignore`) —
+они восстанавливаются из публичных источников:
+
+**`external/`** — клоны репозиториев, из которых взяты архитектура, протоколы
+и датасет (используются для справки и сборки данных; сама репликация в `src/`
+самодостаточна):
+
+```bash
+git clone https://github.com/deep-spin/sparse_kernel_regression.git external/sparse_kernel_regression
+git clone https://github.com/facebookresearch/MemoryMosaics.git external/MemoryMosaics
+git clone https://github.com/berlino/seq_icl.git external/seq_icl
+# seq_icl — на закреплённом коммите, как в ICLL-инструкции:
+git -C external/seq_icl checkout 9b9223d15348b5a415fb453ed988ed5f7ab9fbdc
+```
+
+* `sparse_kernel_regression` (deep-spin) — официальный код статьи
+  («Sparse Attention as Compact Kernel Regression»): оттуда перенесены
+  `src/model.py` и `src/data_synthetic.py`;
+* `MemoryMosaics` (facebookresearch) — архитектура Memory Mosaics и архив
+  датасета BabiStories (`BabiStories/data/babistories-dataset.7z.001–005`);
+* `seq_icl` (berlino) — протокол RegBench (PFA/DFA), перенесён в `src/icl_dfa.py`.
+
+**`data/babistories/`** — `train.bin` (474 704 907 токенов) и `val.bin`
+(4 749 107) — совпадают с Table 4 статьи до токена. Собираются из архива
+`external/MemoryMosaics` (~3 мин, CPU):
 
 ```bash
 $PY -u -m src.prepare_babistories \
   --archive-glob 'external/MemoryMosaics/BabiStories/data/babistories-dataset.7z.*' \
   --out-dir data/babistories
 ```
+
+Фазы 1–3 (теория, синтетика, ICL) работают без `data/` и `external/` — данные
+генерируются на лету; для фазы 4 (LM) нужно `data/babistories/`.
 
 ## Фаза 2 — length generalization (Table 2)
 
