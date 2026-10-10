@@ -22,6 +22,7 @@ src/
   prepare_babistories.py# подготовка датасета BabiStories (GPT-2 BPE)
   analyze.py            # сводка результатов в таблицы/графики
 scripts/run_phase{2,3,4}_*.sh
+scripts/run_phase5_supplement.sh # контрольные прогоны: ICL lr=5e-4, MQMTAR 5M, LM-сиды
 scripts/rerun_entmax.sh         # запуск только biweight/triweight (quick-пресет, seed 1337)
 results/                # metrics.json + summary_*.md
 figures/                # fig1_kernels.png + fig_length_*.png, fig_icl.png, fig_lm.png
@@ -103,6 +104,20 @@ bash scripts/run_phase4_lm.sh quick     # ~1 GPU-ч (3 метода, 8k итер
 bash scripts/run_phase4_lm.sh full      # ~5 GPU-ч (7 методов, 25k итер)
 # отдельный запуск:
 $PY -u -m src.train_lm --method softmax --n-layer 1 --batch-size 16 --max-iters 25000
+```
+
+## Фаза 5 — контрольные прогоны (~6 GPU-ч)
+
+Уточняющие запуски, интерпретация — в `hw2/REPORT.md`, §6–§8:
+* ICL n=1000 с lr=5e-4 (официальный конфиг) — контроль гиперпараметра;
+* MQMTAR на 5M примеров (`results/synthetic5m/`) — контроль бюджета для Table 2;
+* LM сиды 1338/1339 — разброс по сидам для Figure 2.
+
+```bash
+bash scripts/run_phase5_supplement.sh            # все три блока (~6 GPU-ч)
+bash scripts/run_phase5_supplement.sh icl        # только ICL (~1.2 GPU-ч)
+bash scripts/run_phase5_supplement.sh mqmtar5m   # только MQMTAR 5M (~3 GPU-ч)
+bash scripts/run_phase5_supplement.sh lm         # только LM-сиды (~1.8 GPU-ч)
 ```
 
 ## Сводка результатов

@@ -63,7 +63,8 @@ def load_metrics(pattern):
     return out
 
 
-def phase_synthetic(out_dir="results/synthetic", fig_dir="figures"):
+def phase_synthetic(out_dir="results/synthetic", fig_dir="figures", tag=""):
+    suffix = f"_{tag}" if tag else ""
     rows = {}  # (task, method) -> {mult: [accs]}
     for m in load_metrics(os.path.join(out_dir, "*", "*", "*", "metrics.json")):
         task, method, seed = m["args"]["task"], m["args"]["method"], m["args"]["seed"]
@@ -71,6 +72,8 @@ def phase_synthetic(out_dir="results/synthetic", fig_dir="figures"):
 
     lines = ["# Length generalization (paper Table 2)\n"]
     for task in ("mqmtar", "reverse", "sort"):
+        if not any(t == task for t, _ in rows):
+            continue
         mults = MULT[task]
         lines.append(f"\n## {task}\n")
         lines.append("| method | " + " | ".join(mults) + " |")
@@ -100,13 +103,13 @@ def phase_synthetic(out_dir="results/synthetic", fig_dir="figures"):
         plt.grid(alpha=0.3)
         plt.legend(fontsize=7, ncol=2)
         os.makedirs(fig_dir, exist_ok=True)
-        plt.savefig(os.path.join(fig_dir, f"fig_length_{task}.png"), bbox_inches="tight")
+        plt.savefig(os.path.join(fig_dir, f"fig_length_{task}{suffix}.png"), bbox_inches="tight")
         plt.close()
 
     os.makedirs("results", exist_ok=True)
-    with open("results/summary_synthetic.md", "w") as f:
+    with open(f"results/summary_synthetic{suffix}.md", "w") as f:
         f.write("\n".join(lines) + "\n")
-    print("wrote results/summary_synthetic.md and figures/fig_length_*.png")
+    print(f"wrote results/summary_synthetic{suffix}.md and figures/fig_length_*{suffix}.png")
 
 
 def phase_icl(out_dir="results/icl", fig_dir="figures"):
@@ -136,27 +139,39 @@ def phase_icl(out_dir="results/icl", fig_dir="figures"):
     os.makedirs(fig_dir, exist_ok=True)
     plt.savefig(os.path.join(fig_dir, "fig_icl.png"), bbox_inches="tight")
     plt.close()
+    lrs = {m["args"]["num_examples"]: m["args"].get("lr")
+           for m in load_metrics(os.path.join(out_dir, "*", "*", "*", "metrics.json"))}
+    lines.append("\nlr: " + ", ".join(f"{n // 1000}k={lr:g}" for n, lr in sorted(lrs.items())))
     with open("results/summary_icl.md", "w") as f:
         f.write("\n".join(lines) + "\n")
     print("wrote results/summary_icl.md and figures/fig_icl.png")
 
 
 def phase_lm(out_dir="results/lm", fig_dir="figures"):
-    rows = {}
+    rows = {}  # (layer, method) -> [metrics per seed]
     for m in load_metrics(os.path.join(out_dir, "*", "*", "*", "metrics.json")):
         method, layer = m["args"]["method"], m["args"]["n_layer"]
-        rows[(layer, method)] = m
+        rows.setdefault((layer, method), []).append(m)
     plt.figure(figsize=(7, 4.2))
     lines = ["# LM BabiStories (paper Figure 2, scaled budget)\n",
-             "| method | params | final val loss | time (min) |", "|---|---|---|---|"]
-    for (layer, method), m in sorted(rows.items()):
-        hist = m["history"]
-        val = hist.get("val_loss", [])
-        if val:
-            plt.plot([v["iter"] for v in val], [v["val_loss"] for v in val],
-                     label=f"{PRETTY.get(method, method)} ({layer}L)")
-        lines.append(f"| {PRETTY.get(method, method)} ({layer}L) | {m['params']/1e6:.1f}M | "
-                     f"{m.get('final_val_loss'):.3f} | {m['wall_time_s']/60:.0f} |")
+             "| method | params | val loss (mean±std) | per-seed | time/run (min) |",
+             "|---|---|---|---|---|"]
+    for (layer, method), ms in sorted(rows.items()):
+        ms = sorted(ms, key=lambda x: x["args"].get("seed", 0))
+        label = f"{PRETTY.get(method, method)} ({layer}L)"
+        finals = np.array([x.get("final_val_loss") for x in ms], dtype=float)
+        std = float(finals.std(ddof=1)) if len(finals) > 1 else 0.0
+        per_seed = ", ".join(f"{x['args'].get('seed', '?')}:{x.get('final_val_loss'):.3f}" for x in ms)
+        lines.append(f"| {label} | {ms[0]['params'] / 1e6:.1f}M | {finals.mean():.3f}±{std:.3f} | "
+                     f"{per_seed} | {np.mean([x['wall_time_s'] / 60 for x in ms]):.0f} |")
+        curves = [x["history"].get("val_loss", []) for x in ms]
+        curves = [c for c in curves if c]
+        if curves:
+            for c in curves:  # thin per-seed curves
+                plt.plot([v["iter"] for v in c], [v["val_loss"] for v in c], alpha=0.25, linewidth=1)
+            k = min(len(c) for c in curves)  # mean curve over seeds
+            mean = np.mean([[v["val_loss"] for v in c[:k]] for c in curves], axis=0)
+            plt.plot([v["iter"] for v in curves[0][:k]], mean, linewidth=2, label=label)
     plt.xlabel("iteration")
     plt.ylabel("validation loss")
     plt.title("BabiStories language modeling (scaled budget)")
@@ -176,6 +191,8 @@ def main():
     args = ap.parse_args()
     if args.phase in ("synthetic", "all"):
         phase_synthetic()
+        if os.path.isdir("results/synthetic5m"):
+            phase_synthetic(out_dir="results/synthetic5m", tag="5m")
     if args.phase in ("icl", "all"):
         phase_icl()
     if args.phase in ("lm", "all"):
