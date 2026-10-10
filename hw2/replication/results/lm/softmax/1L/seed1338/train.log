@@ -1,0 +1,9 @@
+{"method": "softmax", "seed": 1338, "data_dir": "data/babistories", "n_layer": 1, "n_head": 12, "n_embd": 768, "block_size": 512, "pmem_size": 2688, "batch_size": 16, "max_iters": 8000, "lr": 0.005, "min_lr": 0.0001, "warmup_iters": 2000, "weight_decay": 0.1, "grad_clip": 1.0, "eval_interval": 1000, "eval_iters": 20, "out_dir": "results/lm", "device": "cuda", "dtype": "bfloat16"}
+iter=1000 train=4.2205 val=4.1520
+iter=2000 train=2.9867 val=2.9539
+iter=3000 train=2.5844 val=2.5687
+iter=4000 train=2.4736 val=2.4352
+iter=5000 train=2.4523 val=2.3446
+iter=6000 train=2.2950 val=2.2646
+iter=7000 train=2.2075 val=2.1902
+iter=8000 train=2.3005 val=2.1606

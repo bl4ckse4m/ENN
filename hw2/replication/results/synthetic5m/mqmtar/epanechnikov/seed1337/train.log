@@ -1,0 +1,51 @@
+{
+  "task": "mqmtar",
+  "method": "epanechnikov",
+  "seed": 1337,
+  "train_examples": 5000000,
+  "batch_size": 256,
+  "lr": 0.001,
+  "min_lr": 5e-05,
+  "weight_decay": 0.1,
+  "warmup_frac": 0.02,
+  "grad_clip": 1.0,
+  "n_layer": null,
+  "n_head": null,
+  "n_embd": null,
+  "pmem_size": 2688,
+  "eval_examples": 256,
+  "eval_interval": 1000,
+  "out_dir": "results/synthetic5m",
+  "device": "cuda",
+  "dtype": "bfloat16",
+  "compile": false,
+  "save_ckpt": false
+}
+params=16392416 max_iters=19531
+iter=1000 loss=0.0374 exact=0.9688
+iter=2000 loss=0.0028 exact=0.9961
+iter=3000 loss=0.0018 exact=0.9961
+iter=4000 loss=0.0011 exact=1.0000
+iter=5000 loss=0.0034 exact=1.0000
+iter=6000 loss=0.0031 exact=1.0000
+iter=7000 loss=0.0024 exact=1.0000
+iter=8000 loss=0.0001 exact=1.0000
+iter=9000 loss=0.0014 exact=1.0000
+iter=10000 loss=0.0016 exact=1.0000
+iter=11000 loss=0.0002 exact=0.9961
+iter=12000 loss=0.0001 exact=1.0000
+iter=13000 loss=0.0000 exact=1.0000
+iter=14000 loss=0.0021 exact=1.0000
+iter=15000 loss=0.0000 exact=1.0000
+iter=16000 loss=0.0000 exact=1.0000
+iter=17000 loss=0.0000 exact=1.0000
+iter=18000 loss=0.0053 exact=1.0000
+iter=19000 loss=0.0000 exact=1.0000
+iter=19531 loss=0.0000 exact=1.0000
+len=1x {'exact_acc': 1.0, 'n': 256, 'seq_len': 66, 'pair_acc': 1.0}
+len=2x {'exact_acc': 1.0, 'n': 256, 'seq_len': 126, 'pair_acc': 1.0}
+len=4x {'exact_acc': 1.0, 'n': 256, 'seq_len': 258, 'pair_acc': 1.0}
+len=8x {'exact_acc': 0.9921875, 'n': 256, 'seq_len': 510, 'pair_acc': 0.998046875}
+len=16x {'exact_acc': 0.98046875, 'n': 256, 'seq_len': 1026, 'pair_acc': 0.9951171875}
+len=32x {'exact_acc': 0.91015625, 'n': 256, 'seq_len': 2046, 'pair_acc': 0.9765625}
+len=64x {'exact_acc': 0.765625, 'n': 256, 'seq_len': 4098, 'pair_acc': 0.931640625}

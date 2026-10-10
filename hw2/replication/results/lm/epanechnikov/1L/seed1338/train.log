@@ -1,0 +1,9 @@
+{"method": "epanechnikov", "seed": 1338, "data_dir": "data/babistories", "n_layer": 1, "n_head": 12, "n_embd": 768, "block_size": 512, "pmem_size": 2688, "batch_size": 16, "max_iters": 8000, "lr": 0.005, "min_lr": 0.0001, "warmup_iters": 2000, "weight_decay": 0.1, "grad_clip": 1.0, "eval_interval": 1000, "eval_iters": 20, "out_dir": "results/lm", "device": "cuda", "dtype": "bfloat16"}
+iter=1000 train=4.9580 val=4.9051
+iter=2000 train=4.0150 val=3.9828
+iter=3000 train=3.3908 val=3.2871
+iter=4000 train=2.9958 val=2.9510
+iter=5000 train=2.6919 val=2.5921
+iter=6000 train=2.4485 val=2.4394
+iter=7000 train=2.3467 val=2.3349
+iter=8000 train=2.4304 val=2.3086
